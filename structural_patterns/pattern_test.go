@@ -8,22 +8,19 @@ import (
 func TestAdapter(t *testing.T) {
 	p := new(Phone)
 	p.Charging(new(VoltageAdapter))
-	p.Charging(new(VoltageAdapter2))
 }
 
 func TestBridge(t *testing.T) {
-	//phone := new(bridge.Android)
-	phone := new(IPhone)
-	//phone.Open()
-	//phone.Call()
-	//phone.Close()
+	file := new(VideoParser)
+	file2 := new(PictureParser)
 
-	//phone1 := new(bridge.FoldedPhone)
-	phone1 := new(UpRightPhone)
-	phone1.Brand = phone
-	phone1.Open()
-	phone1.Call()
-	phone1.Close()
+	win := &Windows{OperateSystem{file}}
+	win.ParserFile()
+	win = &Windows{OperateSystem{file2}}
+	win.ParserFile()
+
+	//linux := &Linux{OperateSystem{file2}}
+	//linux.ParserFile()
 }
 
 func TestDecorator(t *testing.T) {
@@ -85,8 +82,8 @@ func TestComposite(t *testing.T) {
 	university.Add(computerCollege)
 	university.Add(infoEngineercollege)
 
-	//university.Print()
-	infoEngineercollege.Print()
+	university.Print()
+	//infoEngineercollege.Print()
 }
 
 func TestFacade(t *testing.T) {

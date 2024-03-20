@@ -4,13 +4,15 @@ import "fmt"
 
 // 命令行模式：界面的按钮都是一条命令，模拟cmd。可能导致某些系统有过多的具体命令类，增加了系统的复杂度。
 
-// 创建命令接口
+// 1、创建抽象命令接口
 type Command interface {
 	//执行动作(操作)
 	execute()
 	//撤销动作(操作)
 	undo()
 }
+
+// 2、创建接收者，接收命令的对象，就是电视机
 type Light string
 
 func (l *Light) on() {
@@ -21,6 +23,7 @@ func (l *Light) off() {
 	fmt.Println(" 电灯关闭了.. ")
 }
 
+// 2、创建接收者，接收命令的对象，就是电视机
 type LightOnCommand struct {
 	Light *Light //聚合Light
 }
@@ -52,6 +55,7 @@ func (n *NoCommand) execute() {}
 
 func (n *NoCommand) undo() {}
 
+// 4、创建调用者。遥控器发出命令
 type remoteController struct {
 	onCommands  []Command
 	offCommands []Command
@@ -79,7 +83,7 @@ func (r *remoteController) OnButtonWasPushed(index int) {
 	r.undoCommand = r.onCommands[index]
 }
 
-// 按下开按钮
+// 按下关按钮
 func (r *remoteController) OffButtonWasPushed(index int) {
 	// 找到你按下的关的按钮， 并调用对应方法
 	r.offCommands[index].execute()

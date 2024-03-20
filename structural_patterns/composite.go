@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-// 组合模式
+// 组合模式:递归调用 组合模式是一种结构型设计模式，它允许客户端以统一的方式处理对象的集合和单个对象。在组合模式中，组合对象的结构与其内部对象的结构相同
 
 type Component interface {
 	Add(Component)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/bmizerany/assert"
 	"testing"
 )
 
@@ -14,21 +15,39 @@ func TestSingleton(t *testing.T) {
 	fmt.Println(obj1, obj2, obj3, obj4)
 }
 
+func TestSingleton2(t *testing.T) {
+	assert.Equal(t, GetInstance(), GetInstance())
+}
+
+func BenchmarkSingleton(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		if GetInstance() != GetInstance() {
+			b.Error("test fail")
+		}
+	}
+}
+
 func TestSimpleFactory(t *testing.T) {
 	obj := SimpleFactory("pepper")
 	fmt.Println(obj)
 }
 
 func TestFactoryMethod(t *testing.T) {
-	obj := FactoryMethod("c")
-	fmt.Println(obj)
+	var f CoffeeFactory = &MeishiCoffeeFactory{}
+	//var f CoffeeFactory = &NatieCoffeeFactory{}
+	cli := &FactoryMethod{f}
+	cli.OrderCoffer()
 }
 
 func TestAbstractFactory(t *testing.T) {
-	//var f factory.Factory = factory.AbstractFactory("ab")
-	var f Factory = AbstractFactory("cd")
-	obj := f.CreateObj("a")
-	fmt.Println(obj)
+	var f AbstractFactory = new(ItalyFactory)
+	//var f AbstractFactory = new(AmericaFactory)
+	c := f.createCoffer()
+	c.AddTang()
+	c.AddNai()
+
+	d := f.createDessert()
+	d.show()
 }
 
 func TestPrototype(t *testing.T) {
@@ -40,9 +59,14 @@ func TestPrototype(t *testing.T) {
 }
 
 func TestBuilder(t *testing.T) {
-	//p1 := &builder.CommonProduct{}
-	p2 := &HeightProduct{}
+	//var p1 Builder = &builder.CommonProduct{}
+	var p2 Builder = &HeightProduct{}
 	d := &Director{Builder: p2}
 	p := d.Build()
+	fmt.Println(p)
+}
+
+func TestOptions(t *testing.T) {
+	p := InitOptions(WithStr1("str1"), WithStr2("str2"))
 	fmt.Println(p)
 }

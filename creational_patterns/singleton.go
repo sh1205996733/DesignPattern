@@ -15,19 +15,47 @@ var lock sync.Mutex
 
 // 2.提供公共访问方法
 // 懒汉式 线程不安全，可能造成内存浪费
-func GetInstanceByLazyLoad() *singleton {
-	//lock.Lock() 此处加锁效率太低
-	//defer lock.Unlock()
-	if obj == nil { //此处多线程存在问题
-		//lock.Lock() 此处加锁效率太低
-		//defer lock.Unlock()
-		//if obj == nil { //双重检查
-		//	obj = new(singleton)
-		//}
-		once.Do(func() { //推荐
-			obj = new(singleton)
-		})
+func GetInstanceByLazyLoadV1() *singleton {
+	if obj == nil { //此处存在多线程并发问题
+		obj = new(singleton)
 	}
+	return obj
+}
+func GetInstanceByLazyLoadV2() *singleton {
+	lock.Lock() //此处加锁效率太低
+	defer lock.Unlock()
+	if obj == nil { //此处存在多线程并发问题
+		obj = new(singleton)
+	}
+	return obj
+}
+func GetInstanceByLazyLoadV3() *singleton {
+	if obj != nil {
+		return obj
+	}
+	lock.Lock() //此处加锁效率太低
+	defer lock.Unlock()
+	//此处存在多线程并发问题 会重复初始化
+	obj = new(singleton)
+	return obj
+}
+func GetInstanceByLazyLoadV4() *singleton {
+	if obj != nil {
+		return obj
+	}
+	lock.Lock() //此处加锁效率太低
+	defer lock.Unlock()
+	if obj != nil { //双检加锁
+		return obj
+	}
+	obj = new(singleton)
+	return obj
+}
+
+func GetInstanceByLazyLoad() *singleton {
+	once.Do(func() { //推荐
+		obj = new(singleton)
+	})
 	return obj
 }
 

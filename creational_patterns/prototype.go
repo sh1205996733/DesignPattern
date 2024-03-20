@@ -7,8 +7,9 @@ import "encoding/json"
 
 // 缺点每个类都要提供一个clone方法，违背了ocp原则
 type Proto struct {
-	Name string
-	Favs []string `json:"-"` // - 字段不会被序列化
+	Name     string
+	Favs     []string
+	Subjects []string `json:"-"` // - 字段不会被序列化
 }
 type Cloneable interface {
 	Clone() *Proto

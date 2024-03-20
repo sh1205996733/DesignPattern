@@ -74,15 +74,3 @@ func (p *EmailObserver) Notify(msg string) {
 func (p *EmailObserver) GetName() string {
 	return p.Name
 }
-
-func main() {
-	var publish Subject
-	publish = &Publisher{Name: "Publisher"}
-	sub1 := &PhoneObserver{Name: "PhoneObserver"}
-	sub2 := &EmailObserver{Name: "EmailObserver"}
-	publish.Subscribe(sub1)
-	publish.Subscribe(sub2)
-	publish.NotifyAll("first")
-	publish.UnSubscribe(1)
-	publish.NotifyAll("second")
-}

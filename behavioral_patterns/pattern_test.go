@@ -5,6 +5,14 @@ import (
 	"testing"
 )
 
+func TestStrategy(t *testing.T) {
+	// 假设这里获取数据，以及数据是否敏感
+	strategyType := "file"
+	strategyType = "encrypt_file"
+	storage, _ := NewStorageStrategy(strategyType)
+	storage.Save()
+}
+
 func TestTemplate(t *testing.T) {
 	//制作红豆豆浆
 	fmt.Println("----制作红豆豆浆----")
@@ -62,13 +70,90 @@ func TestCommand(t *testing.T) {
 }
 
 func TestVisitor(t *testing.T) {
-
+	var circle = new(Circle)
+	rectangle := new(Rectangle)
+	//计算面积
+	areas := new(AreaCalculator)
+	circle.calc(areas)
+	rectangle.calc(areas)
+	//计算周长
+	perimeters := new(PerimeterCalculator)
+	circle.calc(perimeters)
+	rectangle.calc(perimeters)
 }
 
 func TestObserver(t *testing.T) {
-
+	var publish Subject
+	publish = &Publisher{Name: "Publisher"}
+	sub1 := &PhoneObserver{Name: "PhoneObserver"}
+	sub2 := &EmailObserver{Name: "EmailObserver"}
+	publish.Subscribe(sub1)
+	publish.Subscribe(sub2)
+	publish.NotifyAll("first")
+	publish.UnSubscribe(1)
+	publish.NotifyAll("second")
 }
 
 func TestMediator(t *testing.T) {
+	mediator := new(Mediator)
+	owner := &HouseOwner{mediator}
+	tenant := &Tenant{mediator}
+	mediator.owners, mediator.tenants = []Person{owner}, []Person{tenant}
+	//owner.fabuxinxi("商户发布出租信息")
+	tenant.fabuxinxi("租户发布租房信息")
+}
 
+func TestState(t *testing.T) {
+	// 创建活动对象，奖品有1个奖品
+	activity := &RaffleActivity{count: 1}
+	activity.state = GetNoRaffleState(activity)
+	// 我们连续抽300次奖
+	for i := 0; i < 30; i++ {
+		fmt.Println("--------第", i+1, "次抽奖----------")
+		// 参加抽奖，第一步点击扣除积分
+		activity.debuctMoney()
+		// 第二步抽奖
+		activity.raffle()
+	}
+}
+
+func TestResponsibilitychain(t *testing.T) {
+	//创建一个请求
+	purchaseRequest := &PurchaseRequest{1, 5000, 1}
+
+	//创建相关的审批人
+	departmentApprover := &DepartmentApprover{BaseApprover: BaseApprover{Name: "张主任"}}
+	collegeApprover := &CollegeApprover{BaseApprover: BaseApprover{Name: "李院长"}}
+	viceSchoolMasterApprover := &ViceSchoolMasterApprover{BaseApprover: BaseApprover{Name: "王副校"}}
+	schoolMasterApprover := &SchoolMasterApprover{BaseApprover: BaseApprover{Name: "佟校长"}}
+
+	//需要将各个审批级别的下一个设置好 (处理人构成环形: )
+	departmentApprover.SetApprover(collegeApprover)
+	collegeApprover.SetApprover(viceSchoolMasterApprover)
+	viceSchoolMasterApprover.SetApprover(schoolMasterApprover)
+	schoolMasterApprover.SetApprover(departmentApprover)
+
+	//departmentApprover.ProcessRequest(purchaseRequest)
+	viceSchoolMasterApprover.ProcessRequest(purchaseRequest)
+}
+
+func TestIterator(t *testing.T) {
+	stu, stu2, stu3 := new(Student), new(Student), new(Student)
+	list := new(StudentAggregate)
+	list.addStudent(stu, stu2, stu3)
+	iterator := list.getIterator()
+	for iterator.hasNext() {
+		fmt.Println(iterator.next())
+	}
+}
+
+func TestMemento(t *testing.T) {
+
+}
+
+func TestInterpreter(t *testing.T) {
+	//cxt := Context(1)
+	//expression := &Minus{&Plus{&Plus{&Plus{Context(1), 2}, c}, d}, e}
+	//fmt.Println(expression.interpret(cxt))
+	// ((((a + b) + c) + d) - e)= 5
 }
